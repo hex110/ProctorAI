@@ -3,6 +3,7 @@ numpy
 pillow
 opencv-python
 PyQt5
+pyscreenshot
 
 # API Clients
 openai

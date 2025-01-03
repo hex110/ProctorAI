@@ -1,15 +1,15 @@
 import cv2
-from AppKit import NSScreen
-import subprocess
+# import subprocess
 import os
 from openai import OpenAI
-import sounddevice as sd
-import soundfile as sf
-import requests
-from pydub import AudioSegment
+# import sounddevice as sd
+# import soundfile as sf
+# import requests
+# from pydub import AudioSegment
+import pyscreenshot
 
 openai_api_key = os.environ.get('OPENAI_API_KEY')
-xi_api_key = os.environ.get('ELEVEN_LABS_API_KEY')
+# xi_api_key = os.environ.get('ELEVEN_LABS_API_KEY')
 
 def take_picture():
     cap = cv2.VideoCapture(0)
@@ -28,23 +28,28 @@ def take_picture():
         print("Error: Could not read frame.")
         return None
 
-def get_number_of_screens():
-    return len(NSScreen.screens())
-
 def take_screenshots():
-    # returns a list of the filepaths of the monitor screenshots
-    num_screens = get_number_of_screens()
-    if num_screens == 0:
-        print("Error: No screens detected.")
+    try:
+        # Capture the full screen
+        image = pyscreenshot.grab()
+        
+        # Save the image
+        save_filepath = os.path.dirname(os.path.dirname(__file__))+"/screenshots/screen_1.png"
+        os.makedirs(os.path.dirname(save_filepath), exist_ok=True)
+        image.save(save_filepath)
+        
+        return [save_filepath]
+    except Exception as e:
+        print(f"Screenshot error: {e}")
         return None
-    image_filepaths = []
-    for screen in range(1, num_screens+1):
-        save_filepath = os.path.dirname(os.path.dirname(__file__))+f"/screenshots/screen_{screen}.png"
-        subprocess.run(["screencapture", "-x", f"-D{screen}", save_filepath])
-        image_filepaths.append(save_filepath)
-    return image_filepaths
+
+def get_number_of_screens():
+    return 1
 
 def text_to_speech_deprecated(text):
+    # Temporarily disable TTS
+    print("Text-to-speech functionality temporarily disabled")
+    return None
     client = OpenAI(api_key=openai_api_key)
     voice = client.audio.speech.create(
         model="tts-1",
@@ -59,6 +64,9 @@ def text_to_speech_deprecated(text):
 
 
 def get_text_to_speech(text, voice="Harry"):
+    # Temporarily disable TTS
+    print("Text-to-speech functionality temporarily disabled")
+    return None
     character_dict = {
         "Adam" : "pNInz6obpgDQGcFmaJgB",
         "Arnold" : "VR6AewLTigWG4xSOukaG",
@@ -95,6 +103,9 @@ def get_text_to_speech(text, voice="Harry"):
     return voice_path_wav
 
 def play_text_to_speech(voice_file):
+    # Temporarily disable TTS
+    print("Text-to-speech functionality temporarily disabled")
+    return None
     data, samplerate = sf.read(voice_file)
     sd.play(data, samplerate)
     sd.wait()
